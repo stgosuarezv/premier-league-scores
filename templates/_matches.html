@@ -1,0 +1,97 @@
+{% if error %}
+<div class="message">
+  <strong data-i18n="error">Error</strong>{{ error }}
+</div>
+
+{% elif not_available %}
+<div class="message">
+  <strong data-i18n="notAvailable">Not available</strong>
+  <span data-i18n="notAvailableMsg">This league is not included in the current API plan.</span>
+</div>
+
+{% elif not grouped %}
+<div class="message" data-i18n="noMatches">No matches found for this season.</div>
+
+{% else %}
+{% for date, matchday, matches in grouped %}
+<div class="date-section">
+
+  <div class="date-header" {% if date == next_upcoming_date %}id="scroll-target"{% endif %}>
+    <span>{{ date | fmt_date }}</span>
+    {% if matchday %}
+    <span class="gw"><span data-i18n="matchday">Matchday</span> {{ matchday }}</span>
+    {% endif %}
+  </div>
+
+  {% for m in matches %}
+
+  {# ── Featured hero card ── #}
+  {% if date == next_upcoming_date and loop.first %}
+  <div class="match-row featured">
+    <div class="featured-label">
+      <span data-i18n="nextMatch">Next Match</span> · <span data-i18n="matchday">Matchday</span> {{ m.matchday }}
+    </div>
+    <div class="featured-teams">
+      <div class="featured-team">
+        {% if m.home_crest %}<img src="{{ m.home_crest }}" alt="" />{% endif %}
+        <span class="fname">{{ m.home }}</span>
+      </div>
+      <div class="featured-center">
+        <span class="featured-time" data-utc="{{ m.utc_datetime }}">{{ m.time }}</span>
+        <span class="featured-sub tz-label">UTC</span>
+      </div>
+      <div class="featured-team">
+        {% if m.away_crest %}<img src="{{ m.away_crest }}" alt="" />{% endif %}
+        <span class="fname">{{ m.away }}</span>
+      </div>
+    </div>
+  </div>
+
+  {# ── Standard match row ── #}
+  {% else %}
+  <div class="match-row">
+
+    {% if m.status == "FINISHED" %}
+      <div class="match-status ft" data-i18n="ft">FT</div>
+    {% elif m.status == "IN_PLAY" %}
+      <div class="match-status live"><div class="live-dot"></div><span data-i18n="live">LIVE</span></div>
+    {% elif m.status == "PAUSED" %}
+      <div class="match-status ht" data-i18n="ht">HT</div>
+    {% elif m.status == "POSTPONED" %}
+      <div class="match-status ppd" data-i18n="ppd">PPD</div>
+    {% elif m.status == "CANCELLED" %}
+      <div class="match-status ppd" data-i18n="can">CAN</div>
+    {% else %}
+      <div class="match-status time">
+        <span data-utc="{{ m.utc_datetime }}">{{ m.time }}</span><br>
+        <span class="tz-label">UTC</span>
+      </div>
+    {% endif %}
+
+    <div class="match-body">
+      <div class="team-block home">
+        <span class="team-name">{{ m.home }}</span>
+        {% if m.home_crest %}<img src="{{ m.home_crest }}" alt="" />{% endif %}
+      </div>
+      <div class="score-block">
+        {% if m.home_score is not none and m.away_score is not none %}
+          <span class="score-num">{{ m.home_score }}</span>
+          <span class="score-sep">–</span>
+          <span class="score-num">{{ m.away_score }}</span>
+        {% else %}
+          <span class="score-vs" data-i18n="vs">vs</span>
+        {% endif %}
+      </div>
+      <div class="team-block away">
+        {% if m.away_crest %}<img src="{{ m.away_crest }}" alt="" />{% endif %}
+        <span class="team-name">{{ m.away }}</span>
+      </div>
+    </div>
+
+  </div>
+  {% endif %}
+
+  {% endfor %}
+</div>
+{% endfor %}
+{% endif %}
