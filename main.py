@@ -41,6 +41,7 @@ def format_match(match: dict) -> dict:
 @app.get("/")
 async def index(request: Request):
     match = None
+    recent_matches = []
     error = None
 
     if API_KEY == "YOUR_API_KEY_HERE":
@@ -56,7 +57,9 @@ async def index(request: Request):
             if resp.status_code == 200:
                 matches = resp.json().get("matches", [])
                 if matches:
-                    match = format_match(matches[-1])
+                    last_10 = matches[-10:][::-1]  # most recent first
+                    match = format_match(last_10[0])
+                    recent_matches = [format_match(m) for m in last_10[1:]]
                 else:
                     error = "No finished matches found for this season."
             elif resp.status_code == 403:
@@ -68,5 +71,5 @@ async def index(request: Request):
 
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "match": match, "error": error},
+        {"request": request, "match": match, "recent_matches": recent_matches, "error": error},
     )

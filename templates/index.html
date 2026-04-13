@@ -146,6 +146,81 @@
       font-size: 0.875rem;
       color: #b07080;
     }
+
+    .recent {
+      width: 100%;
+      max-width: 520px;
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .recent-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9a86b8;
+      margin-bottom: 0.25rem;
+    }
+
+    .recent-row {
+      background: #2a1a4a;
+      border: 1px solid #3d2a6a;
+      border-radius: 0.75rem;
+      padding: 0.65rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .recent-gw {
+      font-size: 0.7rem;
+      color: #6a3fbf;
+      font-weight: 600;
+      min-width: 2.5rem;
+    }
+
+    .recent-teams {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.4rem;
+    }
+
+    .recent-team {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex: 1;
+    }
+
+    .recent-team.away {
+      justify-content: flex-end;
+    }
+
+    .recent-team img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+    }
+
+    .recent-team .rname {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #e8e0f0;
+    }
+
+    .recent-score {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      min-width: 2.5rem;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -197,6 +272,28 @@
   <div class="error-card">
     <h2>No match data</h2>
     <p>No finished matches were found for this season.</p>
+  </div>
+  {% endif %}
+
+  {% if recent_matches %}
+  <div class="recent">
+    <div class="recent-title">Last 10 results</div>
+    {% for m in recent_matches %}
+    <div class="recent-row">
+      <div class="recent-gw">GW {{ m.matchday }}</div>
+      <div class="recent-teams">
+        <div class="recent-team">
+          {% if m.home_crest %}<img src="{{ m.home_crest }}" alt="{{ m.home }}" />{% endif %}
+          <span class="rname">{{ m.home }}</span>
+        </div>
+        <div class="recent-score">{{ m.home_score }} – {{ m.away_score }}</div>
+        <div class="recent-team away">
+          <span class="rname">{{ m.away }}</span>
+          {% if m.away_crest %}<img src="{{ m.away_crest }}" alt="{{ m.away }}" />{% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
   {% endif %}
 
