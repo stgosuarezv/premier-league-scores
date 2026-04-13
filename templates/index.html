@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Premier League — Latest Result</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #1a0a2e;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    header img {
+      width: 56px;
+      margin-bottom: 0.75rem;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #e8e0f0;
+    }
+
+    header p {
+      font-size: 0.85rem;
+      color: #9a86b8;
+      margin-top: 0.25rem;
+    }
+
+    .card {
+      background: #2a1a4a;
+      border: 1px solid #3d2a6a;
+      border-radius: 1.25rem;
+      padding: 2.5rem 3rem;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    }
+
+    .matchday {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9a86b8;
+      margin-bottom: 1.75rem;
+    }
+
+    .teams {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .team {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      flex: 1;
+    }
+
+    .team img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+    }
+
+    .team .name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-align: center;
+      color: #e8e0f0;
+    }
+
+    .scoreboard {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      flex: 0 0 auto;
+    }
+
+    .score {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .score span {
+      color: #6a3fbf;
+    }
+
+    .ft-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #6a3fbf;
+    }
+
+    .date {
+      text-align: center;
+      margin-top: 1.75rem;
+      font-size: 0.8rem;
+      color: #7a67a0;
+    }
+
+    .error-card {
+      background: #2a1a2a;
+      border: 1px solid #5a2a3a;
+      border-radius: 1.25rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+      color: #e08090;
+    }
+
+    .error-card h2 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .error-card p {
+      font-size: 0.875rem;
+      color: #b07080;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Premier League</h1>
+    <p>Latest match result</p>
+  </header>
+
+  {% if error %}
+  <div class="error-card">
+    <h2>Could not load match data</h2>
+    <p>{{ error }}</p>
+  </div>
+
+  {% elif match %}
+  <div class="card">
+    <div class="matchday">
+      Matchday {{ match.matchday }}
+    </div>
+
+    <div class="teams">
+      <div class="team">
+        {% if match.home_crest %}
+        <img src="{{ match.home_crest }}" alt="{{ match.home }}" />
+        {% endif %}
+        <span class="name">{{ match.home }}</span>
+      </div>
+
+      <div class="scoreboard">
+        <div class="score">
+          {{ match.home_score }}<span> – </span>{{ match.away_score }}
+        </div>
+        <div class="ft-label">Full Time</div>
+      </div>
+
+      <div class="team">
+        {% if match.away_crest %}
+        <img src="{{ match.away_crest }}" alt="{{ match.away }}" />
+        {% endif %}
+        <span class="name">{{ match.away }}</span>
+      </div>
+    </div>
+
+    <div class="date">{{ match.date }}</div>
+  </div>
+
+  {% else %}
+  <div class="error-card">
+    <h2>No match data</h2>
+    <p>No finished matches were found for this season.</p>
+  </div>
+  {% endif %}
+
+</body>
+</html>
